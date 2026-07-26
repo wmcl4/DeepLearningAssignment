@@ -88,15 +88,15 @@ Checkpoints (model weights, optimizer state, loss history) are saved after every
 | Metric | Value |
 |---|---|
 | IoU (test set) | — |
-| Dice Coefficient | — |
-| F1 Score | — |
-| Accuracy | — |
-| Precision | — |
-| Recall | — |
+| Dice Coefficient | 0.957 |
+| F1 Score | 0.957 |
+| Accuracy | 0.975 |
+| Precision | 0.982 |
+| Recall | 0.934 |
 
 **Training / Validation Loss:**
 
-`[insert loss curve image here]`
+<img width="1140" height="824" alt="Screenshot 2026-07-26 170651" src="https://github.com/user-attachments/assets/8dab3086-2677-4d2a-ae1c-7f297330b052" />
 
 **Qualitative predictions:**
 
