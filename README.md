@@ -37,27 +37,13 @@ This project frames the problem as **binary semantic segmentation**: given an RG
 
 ## 3. What We Did
 
-We fed approximately 1000 image/mask pairs from the PV01/PV08 dataset into a U-Net trained from scratch, resizing all images and masks to 512×512. Training used `BCEWithLogitsLoss`, Adam (lr = 1e-4), batch size 4, for up to 50 epochs with early stopping (patience = 5 epochs on validation loss). Model checkpoints were saved after every epoch, and the best-performing epoch was selected based on lowest validation loss for final evaluation.
+We fed approximately 645 image/mask pairs from the PV01/PV03 dataset into a U-Net trained from scratch, resizing all images and masks to 512×512. Training used `BCEWithLogitsLoss`, Adam (lr = 1e-4), batch size 4, for up to 50 epochs with early stopping (patience = 5 epochs on validation loss). Model checkpoints were saved after every epoch, and the best-performing epoch was selected based on lowest validation loss for final evaluation.
 
 Training and inference both run on GPU (CUDA) where available, with automatic CPU fallback. 
 
 ---
 
 ## 4. Results
-
-| | |
-|---|---|
-| Loss function | `MSE` |
-| Optimizer | Adam |
-| Learning rate | 1e-4 |
-| Batch size | 4 |
-| Max epochs | 50 |
-| Early stopping | Patience = 5 epochs (validation loss) |
-| Hardware | GPU (CUDA) where available, CPU fallback |
-
-Checkpoints (model weights, optimizer state, loss history) are saved after every epoch, allowing training to be resumed or the best-performing epoch to be selected retrospectively based on lowest validation loss.
-
----
 
 | Metric | Value |
 |---|---|
