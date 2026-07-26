@@ -1,71 +1,49 @@
 # Solar Panel Segmentation from Aerial Imagery (U-Net)
 
-## Introduction & Motivation
-
-Binary semantic segmentation of rooftop and ground-mounted solar photovoltaic (PV) panels from RGB aerial imagery, using a U-Net convolutional neural network
-
-Given an aerial image tile, the model predicts a pixel-wise mask indicating which pixels belong to a solar panel versus background (roofs, vegetation, roads, open ground).
+Binary semantic segmentation of rooftop and ground-mounted solar photovoltaic (PV) panels from RGB aerial imagery, using a U-Net convolutional neural network implemented from scratch in PyTorch.
 
 ---
 
-## Installation
+## 1. Introduction & Motivation
 
-Create a Python virtual environment and install dependencies:
+Accurately mapping the location and extent of solar photovoltaic installations is valuable for utilities planning grid integration, policymakers tracking renewable energy adoption, and researchers estimating solar potential across regions. Manually annotating panels across large aerial or satellite image collections doesn't scale to city-, regional-, or national-level coverage.
 
-```bash
-pip install torch torchvision numpy matplotlib scikit-image pillow tqdm
-```
-
-If running on Google Colab, GPU support (CUDA) is enabled automatically if the runtime has one attached (**Runtime > Change runtime type > GPU**).
+This project frames the problem as **binary semantic segmentation**: given an RGB aerial image tile, predict a pixel-wise mask indicating which pixels belong to a solar panel versus background (roofs, vegetation, roads, open ground).
 
 ---
 
-## How to start
+## 2. Dataset & Network Architecture
 
-1. Place your dataset under `data/`, organized into pre-split subfolders:
-   ```
-   data/
-   ├── train/
-   │   ├── PV01_....bmp
-   │   ├── PV01_..._label.bmp
-   │   └── ...
-   ├── val/
-   └── test/
-   ```
-2. Update `BASE_PATH` in `train_solar_panel_unet.py` to point to your data folder.
-3. Run training:
-   ```bash
-   python train_solar_panel_unet.py
-   ```
-4. Once trained, evaluate on the held-out test set (reports IoU, Dice, F1, accuracy, precision, recall, plus visual predictions):
-   ```bash
-   python test_solar_panel_unet.py
-   ```
----
-
-## Data Source
+### Dataset
 
 **PV01 / PV03 Solar Panel Segmentation Dataset**
 *Multi-resolution dataset for photovoltaic panel segmentation from satellite and aerial imagery* — https://zenodo.org/record/5171712
 
 - RGB image tiles paired with binary segmentation masks (`_label` suffix)
 - Mask values: 255 (white) = solar panel, 0 (black) = background
-- Dataset subsets are named by approximate ground sample distance: **PV01 (~0.1 m/pixel)**, **PV03 (~0.3 m/pixel)
+- Subsets are named by approximate ground sample distance: **PV01 (~0.1 m/pixel)** and **PV03 (~0.3 m/pixel)** — two different spatial resolutions of the same benchmark, not simply two geographic batches
+- ~645 image/mask pairs, split 70/20/10 into train/validation/test at the image level with a fixed random seed for reproducibility
 
----
+### Network Architecture
 
-## Model
-
-**U-Net** (Ronneberger et al., 2015 — *"U-Net: Convolutional Networks for Biomedical Image Segmentation"*, [arXiv:1505.04597](https://arxiv.org/abs/1505.04597)), implemented in PyTorch.
+**U-Net** (Ronneberger et al., 2015 — *"U-Net: Convolutional Networks for Biomedical Image Segmentation"*, [arXiv:1505.04597](https://arxiv.org/abs/1505.04597)), implemented from scratch in PyTorch.
 
 - **Encoder:** 5 stages of double 3×3 convolutions (batch norm + ReLU), with 2×2 max pooling between stages — channel depth 64 → 128 → 256 → 512 → 1024
 - **Decoder:** 4 stages of 2×2 transposed convolutions + skip connections from the matching encoder stage + double convolutions — channel depth 1024 → 512 → 256 → 128 → 64
-- **Output:** 1×1 convolution producing a single-channel raw logit map (no sigmoid applied internally — paired with `BCEWithLogitsLoss` for numerical stability; apply `torch.sigmoid()` manually at inference time)
+- **Output:** 1×1 convolution producing a single-channel raw logit map (no sigmoid applied internally — paired with `BCEWithLogitsLoss`; `torch.sigmoid()` applied manually at inference time)
 - **Input size:** 512×512 (resized from native tile resolution)
 
 ---
 
-## Training Setup
+## 3. What We Did
+
+We fed approximately 1000 image/mask pairs from the PV01/PV08 dataset into a U-Net trained from scratch, resizing all images and masks to 512×512. Training used `BCEWithLogitsLoss`, Adam (lr = 1e-4), batch size 4, for up to 50 epochs with early stopping (patience = 5 epochs on validation loss). Model checkpoints were saved after every epoch, and the best-performing epoch was selected based on lowest validation loss for final evaluation.
+
+Training and inference both run on GPU (CUDA) where available, with automatic CPU fallback. 
+
+---
+
+## 4. Results
 
 | | |
 |---|---|
@@ -80,8 +58,6 @@ If running on Google Colab, GPU support (CUDA) is enabled automatically if the r
 Checkpoints (model weights, optimizer state, loss history) are saved after every epoch, allowing training to be resumed or the best-performing epoch to be selected retrospectively based on lowest validation loss.
 
 ---
-
-## Results
 
 | Metric | Value |
 |---|---|
@@ -111,22 +87,32 @@ Checkpoints (model weights, optimizer state, loss history) are saved after every
 
 ---
 
-## Project Organization
+## Runnable Example
 
+```bash
+# Install dependencies
+pip install torch torchvision numpy matplotlib scikit-image pillow tqdm
+
+# Expected folder structure:
+# data/
+# ├── train/
+# │   ├── PV01_....bmp
+# │   ├── PV01_..._label.bmp
+# │   └── ...
+# ├── val/
+# └── test/
+
+# Train
+python training.py
+
+# Evaluate on test set (IoU, Dice, F1, accuracy, precision, recall + visualizations)
+python test_solar_panel_unet.py
+
+# Run inference on a new data, full-size aerial image
+python predict_full_image.py
 ```
-├── data/                          <- Dataset (train/val/test subfolders)
-├── model/
-│   ├── unet_layers.py             <- DoubleConv building block
-│   └── unet_model.py              <- Full U-Net architecture
-├── provider/
-│   └── solar_dataset_provider.py  <- Dataset loading, preprocessing, augmentation
-├── train_solar_panel_unet.py      <- Training script
-├── test_solar_panel_unet.py       <- Test set evaluation (IoU/Dice/F1 + visualizations)
-├── predict_full_image.py          <- Tiled inference on full-size, out-of-distribution images
-└── README.md
-```
 
-
+---
 
 
 
