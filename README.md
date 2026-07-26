@@ -83,8 +83,6 @@ Checkpoints (model weights, optimizer state, loss history) are saved after every
 
 ## Results
 
-*(Insert final values)*
-
 | Metric | Value |
 |---|---|
 | IoU (test set) | — |
@@ -93,6 +91,13 @@ Checkpoints (model weights, optimizer state, loss history) are saved after every
 | Accuracy | 0.975 |
 | Precision | 0.982 |
 | Recall | 0.934 |
+
+Metric	       Count	   Percent
+True Positive	 4753280	   27.895883
+True Negative	 11861087	69.609933
+False Positive	 89561	   0.525612
+False Negative	 335432	   1.968572
+
 
 **Training / Validation Loss:**
 
