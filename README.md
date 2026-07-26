@@ -99,8 +99,9 @@ Checkpoints (model weights, optimizer state, loss history) are saved after every
 <img width="1140" height="824" alt="Screenshot 2026-07-26 170651" src="https://github.com/user-attachments/assets/8dab3086-2677-4d2a-ae1c-7f297330b052" />
 
 **Qualitative predictions:**
+<img width="1418" height="446" alt="Screenshot 2026-07-26 170916" src="https://github.com/user-attachments/assets/f6cfa61c-846e-4e7d-99c0-b7f9eba83fa2" />
 
-`[insert original / prediction / ground truth comparison images here]`
+<img width="1414" height="444" alt="Screenshot 2026-07-26 171353" src="https://github.com/user-attachments/assets/56f7c775-347f-4fee-b689-af5eef4da5b3" />
 
 ---
 
