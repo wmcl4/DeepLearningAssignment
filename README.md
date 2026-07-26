@@ -1,6 +1,6 @@
 #Solar Panel Segmentation from Aerial Imagery (U-Net)
 
-## 1. Introduction & Motivation
+## Introduction & Motivation
 
 Binary semantic segmentation of rooftop and ground-mounted solar photovoltaic (PV) panels from RGB aerial imagery, using a U-Net convolutional neural network
 
@@ -104,7 +104,7 @@ Checkpoints (model weights, optimizer state, loss history) are saved after every
 
 ---
 
-## 🌐 Project Organization
+## Project Organization
 
 ```
 ├── data/                          <- Dataset (train/val/test subfolders)
