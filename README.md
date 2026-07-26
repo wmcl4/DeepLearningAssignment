@@ -1,4 +1,4 @@
-#Solar Panel Segmentation from Aerial Imagery (U-Net)
+# Solar Panel Segmentation from Aerial Imagery (U-Net)
 
 ## Introduction & Motivation
 
