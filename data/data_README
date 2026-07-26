@@ -1,0 +1,47 @@
+# Data
+
+This folder is intentionally left empty of raw imagery in the repository (dataset omitted to keep the repo lightweight and respect the original dataset's licensing). Only data-preparation script is included.
+
+## Source
+
+**PV01 / PV03 Solar Panel Segmentation Dataset** (subsets of the *Multi-resolution dataset for photovoltaic panel segmentation from satellite and aerial imagery*)
+https://zenodo.org/record/5171712
+
+- **PV01** — used to **train** the model. Split into train/val/test (70/20/10).
+- **PV03** — used **only for testing**, to evaluate how well the model generalizes to a different data subset it was never trained on. Not split; the entire PV03 set is held out purely for evaluation. PV03 covers six sub-categories:
+  - `PV03_Ground_Cropland`
+  - `PV03_Ground_Grassland`
+  - `PV03_Ground_SalineAlkali`
+  - `PV03_Ground_Shrubwood`
+  - `PV03_Ground_WaterSurface`
+  - `PV03_Rooftop`
+
+## Setup
+
+1. Download PV01 and PV03 from the Zenodo link above.
+2. Place PV01's raw files under `data/PV01/`, and PV03's six category folders under `data/PV03/`.
+3. Run the data-splitting script:
+   ```bash
+   python data_divider.py
+   ```
+   This script:
+   - Splits **PV01 only** into train/val/test (70/20/10, seed=13), stratified per category if applicable, so each split gets a proportional mix
+   - Verifies each image has a matching `_label` mask, skipping and warning on any that don't
+   - Copies **all of PV03** (no split) into a separate `test_PV03/` folder, kept apart from PV01's own test set
+   - Prefixes filenames with their category name to avoid collisions
+
+4. Resulting structure:
+   ```
+   data/
+   ├── PV01/                          <- original downloaded PV01 files
+   ├── PV03/                          <- original downloaded PV03 category folders
+   ├── train/                         <- PV01 training split
+   ├── val/                           <- PV01 validation split
+   ├── test/                          <- PV01 held-out test split (in-distribution)
+   └── test_PV03/                     <- full PV03 set, test-only (out-of-distribution)
+   ```
+5. Update `BASE_PATH` in the training script to point to this `data/` folder.
+
+## Why two separate test sets
+
+Reporting metrics on `test/` (PV01) and `test_PV03/` separately gives two distinct signals: performance on data similar to training (in-distribution) versus performance on a related but unseen subset (a basic generalization check). Merging them into one number would obscure this distinction.
