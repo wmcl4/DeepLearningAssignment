@@ -56,7 +56,7 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 
 | Metric | Value |
 |---|---|
-| IoU (test set) | — |
+| IoU (test set) | 0.918 |
 | Dice Coefficient | 0.957 |
 | F1 Score | 0.957 |
 | Accuracy | 0.975 |
