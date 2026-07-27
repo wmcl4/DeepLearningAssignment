@@ -55,6 +55,7 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 <img width="1414" height="444" alt="Screenshot 2026-07-26 171353" src="https://github.com/user-attachments/assets/56f7c775-347f-4fee-b689-af5eef4da5b3" />
 <br><br>
 **Segmentation Performance Metrics**
+
 | Metric | Value |
 |---|---|
 | IoU (test set) | 0.918 |
@@ -63,14 +64,18 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 | Accuracy | 0.975 |
 | Precision | 0.982 |
 | Recall | 0.934 |
+
 <br><br>
+
+
 **Confusion Matrix**
-|Metric	       |Count	   |Percent |
+
+| Metric | Count | Percent |
 |---|---|---|
-|True Positive	 |4753280	|27.895883 |
-|True Negative	 |11861087	|69.609933 |
-|False Positive |89561	   |0.525612 |
-|False Negative |335432	   |1.968572 |
+| True Positive | 4753280 | 27.90% |
+| True Negative | 11861087 | 69.61% |
+| False Positive | 89561 | 0.53% |
+| False Negative | 335432 | 1.97% |
 
 ---
 
