@@ -48,11 +48,14 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 **Training / Validation Loss:**
 
 <img width="1140" height="824" alt="Screenshot 2026-07-26 170651" src="https://github.com/user-attachments/assets/8dab3086-2677-4d2a-ae1c-7f297330b052" />
+
 <br><br>
+
 **Qualitative predictions:**
 <img width="1418" height="446" alt="Screenshot 2026-07-26 170916" src="https://github.com/user-attachments/assets/f6cfa61c-846e-4e7d-99c0-b7f9eba83fa2" />
 
 <img width="1414" height="444" alt="Screenshot 2026-07-26 171353" src="https://github.com/user-attachments/assets/56f7c775-347f-4fee-b689-af5eef4da5b3" />
+
 <br><br>
 
 **Segmentation Performance Metrics**
@@ -70,10 +73,10 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 **Confusion Matrix**
 | Metric | Count | Percent |
 |---|---|---|
-| True Positive | 4753280 | 27.90% |
-| True Negative | 11861087 | 69.61% |
-| False Positive | 89561 | 0.53% |
-| False Negative | 335432 | 1.97% |
+| True Positive | 4753280 | 27.90 |
+| True Negative | 11861087 | 69.61 |
+| False Positive | 89561 | 0.53 |
+| False Negative | 335432 | 1.97 |
 
 ---
 
