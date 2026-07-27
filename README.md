@@ -21,16 +21,16 @@ This project frames the problem as **binary semantic segmentation**: given an RG
 
 - RGB image tiles paired with binary segmentation masks (`_label` suffix)
 - Mask values: 255 (white) = solar panel, 0 (black) = background
-- Subsets are named by approximate ground sample distance: **PV01 (~0.1 m/pixel)** and **PV03 (~0.3 m/pixel)** — two different spatial resolutions of the same benchmark, not simply two geographic batches
+- Subsets are named by approximate ground sample distance: **PV01 (~0.1 m/pixel)** and **PV03 (~0.3 m/pixel)** — two different spatial resolutions of the same benchmark
 - ~645 image/mask pairs, split 70/20/10 into train/validation/test at the image level with a fixed random seed for reproducibility
 
 ### Network Architecture
 
-**U-Net** (Ronneberger et al., 2015 — *"U-Net: Convolutional Networks for Biomedical Image Segmentation"*, [arXiv:1505.04597](https://arxiv.org/abs/1505.04597)), implemented from scratch in PyTorch.
+**U-Net** (Ronneberger et al., 2015 — *"U-Net: Convolutional Networks for Biomedical Image Segmentation"*, [arXiv:1505.04597](https://arxiv.org/abs/1505.04597)), implemented in PyTorch.
 
 - **Encoder:** 5 stages of double 3×3 convolutions (batch norm + ReLU), with 2×2 max pooling between stages — channel depth 64 → 128 → 256 → 512 → 1024
 - **Decoder:** 4 stages of 2×2 transposed convolutions + skip connections from the matching encoder stage + double convolutions — channel depth 1024 → 512 → 256 → 128 → 64
-- **Output:** 1×1 convolution producing a single-channel raw logit map (no sigmoid applied internally — paired with `BCEWithLogitsLoss`; `torch.sigmoid()` applied manually at inference time)
+- **Output:** 1×1 convolution producing a single-channel raw logit map 
 - **Input size:** 512×512 (resized from native tile resolution)
 
 ---
@@ -44,6 +44,15 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 ---
 
 ## 4. Results
+
+**Training / Validation Loss:**
+
+<img width="1140" height="824" alt="Screenshot 2026-07-26 170651" src="https://github.com/user-attachments/assets/8dab3086-2677-4d2a-ae1c-7f297330b052" />
+
+**Qualitative predictions:**
+<img width="1418" height="446" alt="Screenshot 2026-07-26 170916" src="https://github.com/user-attachments/assets/f6cfa61c-846e-4e7d-99c0-b7f9eba83fa2" />
+
+<img width="1414" height="444" alt="Screenshot 2026-07-26 171353" src="https://github.com/user-attachments/assets/56f7c775-347f-4fee-b689-af5eef4da5b3" />
 
 | Metric | Value |
 |---|---|
@@ -60,16 +69,6 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 |True Negative	 |11861087	|69.609933 |
 |False Positive |89561	   |0.525612 |
 |False Negative |335432	   |1.968572 |
-
-
-**Training / Validation Loss:**
-
-<img width="1140" height="824" alt="Screenshot 2026-07-26 170651" src="https://github.com/user-attachments/assets/8dab3086-2677-4d2a-ae1c-7f297330b052" />
-
-**Qualitative predictions:**
-<img width="1418" height="446" alt="Screenshot 2026-07-26 170916" src="https://github.com/user-attachments/assets/f6cfa61c-846e-4e7d-99c0-b7f9eba83fa2" />
-
-<img width="1414" height="444" alt="Screenshot 2026-07-26 171353" src="https://github.com/user-attachments/assets/56f7c775-347f-4fee-b689-af5eef4da5b3" />
 
 ---
 
