@@ -72,6 +72,16 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 
 ---
 
+## 5. Extension: Cross-Resolution and Real-World Generalization
+
+Beyond the core PV01 benchmark results above, we tested how well the trained model generalizes beyond its training distribution — both to a different resolution tier of the same dataset, and to real-world U.S. aerial imagery it had never seen.
+
+**Method:** The U-Net was retrained on PV03 (0.3m resolution) using all six of its sub-categories combined (five ground-cover types plus rooftop), then evaluated directly against 0.3m NAIP aerial imagery of Arlington, Oregon — chosen to match PV03's resolutionr. A small set of hand-labeled NAIP tiles (~50) was then used to fine-tune the PV03 model on this new domain.
+
+**Results:** Direct transfer of PV03 model to NAIP imagery was weak, consistent with the source dataset's own reported finding that cross-domain transfer without fine-tuning is unreliable. Fine-tuning on the small labeled NAIP set meaningfully improved detection, though there are some limitations. This work is still in progress.
+
+---
+
 ## Runnable Example
 
 ```bash
