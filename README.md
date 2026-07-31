@@ -1,6 +1,6 @@
 # Solar Panel Segmentation from Aerial Imagery (U-Net)
 
-Binary semantic segmentation of rooftop and ground-mounted solar photovoltaic (PV) panels from RGB aerial imagery, using a U-Net convolutional neural network implemented from scratch in PyTorch.
+Binary semantic segmentation of rooftop and ground-mounted solar photovoltaic (PV) panels from RGB aerial imagery, using a U-Net convolutional neural network implemented in PyTorch.
 
 ---
 
