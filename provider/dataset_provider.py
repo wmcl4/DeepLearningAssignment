@@ -90,7 +90,7 @@ class RooftopPanels(td.Dataset):
         rgb, mask = self.dataset[index]
 
         if self.augment:
-            rgb, mask = self._apply_augmentation(rgb, mask)
+            rgb, mask = self.apply_augmentation(rgb, mask)
 
         return rgb, mask
 
