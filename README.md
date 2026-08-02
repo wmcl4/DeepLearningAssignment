@@ -2,7 +2,7 @@
 
 Binary semantic segmentation of rooftop and ground-mounted solar photovoltaic (PV) panels from RGB aerial imagery, using a U-Net convolutional neural network implemented in PyTorch.
 
----
+
 
 ## 1. Introduction & Motivation
 
@@ -10,7 +10,7 @@ Accurately mapping the location and extent of solar photovoltaic installations i
 
 This project frames the problem as **binary semantic segmentation**: given an RGB aerial image tile, predict a pixel-wise mask indicating which pixels belong to a solar panel versus background (roofs, vegetation, roads, open ground).
 
----
+
 
 ## 2. Dataset & Network Architecture
 
@@ -33,7 +33,7 @@ This project frames the problem as **binary semantic segmentation**: given an RG
 - **Output:** 1×1 convolution producing a single-channel raw logit map 
 - **Input size:** 512×512 (resized from native tile resolution)
 
----
+
 
 ## 3. What We Did
 
@@ -41,7 +41,7 @@ We fed approximately 645 image/mask pairs from the PV01/PV03 dataset into a U-Ne
 
 Training and inference both run on GPU (CUDA) where available, with automatic CPU fallback. 
 
----
+
 
 ## 4. Results
 
@@ -78,7 +78,7 @@ Training and inference both run on GPU (CUDA) where available, with automatic CP
 | False Positive | 89561 | 0.53 |
 | False Negative | 335432 | 1.97 |
 
----
+
 
 ## 5. Extension: Cross-Resolution and Real-World Generalization
 
@@ -88,7 +88,7 @@ Beyond the core PV01 benchmark results above, we tested how well the trained mod
 
 **Results:** Direct transfer of PV03 model to NAIP imagery was weak, consistent with the source dataset's own reported finding that cross-domain transfer without fine-tuning is unreliable. Fine-tuning on the small labeled NAIP set meaningfully improved detection, though there are some limitations. This work is still in progress.
 
----
+
 
 ## Runnable Example
 
@@ -115,7 +115,7 @@ python test_solar_panel_unet.py
 python predict_full_image.py
 ```
 
----
+
 
 
 
