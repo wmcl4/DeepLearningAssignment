@@ -21,7 +21,7 @@ def main():
     for label_path in label_files:
         mask = np.array(Image.open(label_path).convert("L"))
 
-        # Your painted convention: dark pixels = panel, light pixels = background
+        # my painted convention: dark pixels = panel, light pixels = background
         # Target convention (what dataset_provider.py expects): black = background,
         # white = panel
         panel_mask = mask < THRESHOLD

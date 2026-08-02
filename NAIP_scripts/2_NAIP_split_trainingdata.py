@@ -9,9 +9,6 @@ output_dir = Path(r"/naip_finetune_data")
 ext = ".bmp"
 label_suffix = "_label"
 
-# With very few images, an 80/20 split (no separate test set) is reasonable --
-# your "test" for this model is really the broader stitched NAIP output you're
-# already inspecting qualitatively.
 train_ratio = 0.80
 val_ratio = 0.20
 

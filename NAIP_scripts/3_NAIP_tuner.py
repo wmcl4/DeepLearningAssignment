@@ -28,11 +28,10 @@ PV03_CHECKPOINT = "model_epoch45.pt"
 
 # Fine-tuning settings -- much lower LR, far fewer epochs than training from scratch
 FINETUNE_LR = 0.00001  # 10x lower than the original 0.0001
-FINETUNE_EPOCHS = 500
+FINETUNE_EPOCHS = 50
 PATIENCE = 5
 
-# Distinct run name so this saves separately from the frozen-encoder run,
-# letting you compare both directly afterward
+# Distinct run name so this saves uniquely
 RUN_NAME = "naip_finetuned"
 # ----------------
 
@@ -53,10 +52,6 @@ if __name__ == '__main__':
     )
     model.load_state_dict(pv03_checkpoint["net_state_dict"])
     print(f"Loaded starting weights from: {PV03_MODEL_FOLDER}/{PV03_CHECKPOINT}")
-
-    # NOTE: no encoder freeze here -- every layer is trainable, for
-    # direct comparison against the frozen-encoder run
-    print("Encoder NOT frozen -- fine-tuning the entire network.")
 
     loss_fn = nn.BCEWithLogitsLoss()
     optim = opt.Adam(model.parameters(), lr=FINETUNE_LR)
