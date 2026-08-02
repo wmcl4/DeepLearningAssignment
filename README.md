@@ -18,17 +18,16 @@ This project frames the problem as **binary semantic segmentation**: given an RG
 
 **PV01 / PV03 Solar Panel Segmentation Dataset**
 *Multi-resolution dataset for photovoltaic panel segmentation from satellite and aerial imagery* — https://zenodo.org/record/5171712
-
 - RGB image tiles paired with binary segmentation masks (`_label` suffix)
 - Mask values: 255 (white) = solar panel, 0 (black) = background
-- Subsets are named by approximate ground sample distance: **PV01 (~0.1 m/pixel)** and **PV03 (~0.3 m/pixel)
+- Subsets are named by approximate ground sample distance: **PV01 (~0.1 m/pixel)** and **PV03 (~0.3 m/pixel)**
 - 645 image/mask pairs, split 70/20/10 into train/validation/test at the image level with a fixed random seed for reproducibility
 
 **NAIP (National Agriculture Imagery Program)**
 Aerial imagery program run by the USDA Farm Service Agency, covering the United States — https://www.fsa.usda.gov/resources/programs/national-agriculture-imagery-program-naip
 - Four-band (RGB + near-infrared) aerial orthophotos
-- Native spatial resolution of ~0.6–1 m/pixel 
-- Used here as a generalization test: a NAIP tile covering Oregon, USA (`m_4412042_sw_10_030_20220628.tif`, captured June 28, 2022) was split into 512×512 tiles and run through the PV01-trained model, then stitched into a full-scene detection overlay
+- Native spatial resolution of ~0.6–1 m/pixel
+- A single NAIP tile covering Oregon, USA (`m_4412042_sw_10_030_20220628.tif`) was used to test the model on real, out-of-distribution imagery
 
 
 ### Network Architecture
@@ -38,13 +37,13 @@ Aerial imagery program run by the USDA Farm Service Agency, covering the United 
 - **Encoder:** 5 stages of double 3×3 convolutions (batch norm + ReLU), with 2×2 max pooling between stages — channel depth 64 → 128 → 256 → 512 → 1024
 - **Decoder:** 4 stages of 2×2 transposed convolutions + skip connections from the matching encoder stage + double convolutions — channel depth 1024 → 512 → 256 → 128 → 64
 - **Output:** 1×1 convolution producing a single-channel raw logit map 
-- **Input size:** 512×512 (resized from native tile resolution)
+
 
 
 
 ## 3. What We Did
 
-We fed approximately 645 image/mask pairs from the PV01/PV03 dataset into a U-Net trained from scratch, resizing all images and masks to 512×512. Training used `BCEWithLogitsLoss`, Adam (lr = 1e-4), batch size 4, for up to 50 epochs with early stopping (patience = 5 epochs on validation loss). Model checkpoints were saved after every epoch, and the best-performing epoch was selected based on lowest validation loss for final evaluation.
+We fed 645 image/mask pairs from the PV01 dataset into a U-Net trained from scratch, resizing all images and masks to 512×512. Training used `BCEWithLogitsLoss`, Adam (lr = 1e-4), batch size 4, for up to 50 epochs with early stopping (patience = 5 epochs on validation loss). Model checkpoints were saved after every epoch, and the best-performing epoch was selected based on lowest validation loss for final evaluation.
 
 Training and inference both run on GPU (CUDA) where available, with automatic CPU fallback. 
 
