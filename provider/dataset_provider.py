@@ -14,10 +14,13 @@ import torchvision.transforms.functional as TF
 
 # Dataset provider (DoubleConv-style U-Net dataset + augmentation)
 
+#ensures images are identical size
 custom_transform = transforms.Compose([
     transforms.Resize((512, 512))
 ])
 
+
+#loads image-mask pairs and confirms validity; applies augmentation
 class RooftopPanels(td.Dataset):
     def __init__(self, base_path, dataset_type):
         self.dataset = []
@@ -31,12 +34,13 @@ class RooftopPanels(td.Dataset):
 
         skipped = []
 
+        #load image pairs into memory
         for rgb_file in tqdm(rgb_files):
             id_ = os.path.basename(rgb_file).replace('.bmp', '')
 
             mask_file = os.path.join(split_dir, id_ + "_label.bmp")
 
-            # Skip if either file is missing, or exists but is 0 bytes
+            #skip if either file is missing or 0 bytes
             if not os.path.exists(mask_file):
                 skipped.append((rgb_file, "missing mask"))
                 continue
@@ -48,7 +52,7 @@ class RooftopPanels(td.Dataset):
             if os.path.getsize(mask_file) == 0:
                 skipped.append((rgb_file, "0-byte mask"))
                 continue
-
+            #attempt to open image pairs to confirm validity
             try:
                 rbg_read = np.array(Image.open(rgb_file).convert("RGB"))
                 mask_read = np.array(Image.open(mask_file).convert("L"))
@@ -56,18 +60,22 @@ class RooftopPanels(td.Dataset):
                 skipped.append((rgb_file, f"failed to open: {e}"))
                 continue
 
+            #convert to numpy
             rgb_read = np.transpose(rbg_read, (2, 0, 1))
             mask_read = np.expand_dims(mask_read, axis=0)
 
+            #convert to pytorch tensor
             rgb_read = torch.from_numpy(rgb_read.copy()).float()
             mask_read = torch.from_numpy(mask_read.copy()).float()
 
+            #resize image and normalize values
             rgb_read = custom_transform(rgb_read) / 255.0
             mask_read = custom_transform(mask_read)
             mask_read = (mask_read > 0).float()
 
             self.dataset.append((rgb_read, mask_read))
 
+        #report skipped files
         if skipped:
             print(f"Skipped {len(skipped)} file(s) in '{dataset_type}':")
             for f, reason in skipped[:20]:
@@ -76,7 +84,7 @@ class RooftopPanels(td.Dataset):
                 print(f"  ...and {len(skipped) - 20} more")
 
     def __len__(self):
-        return len(self.dataset)
+        return len(self.dataset) #total number of pairs
 
     def __getitem__(self, index):
         rgb, mask = self.dataset[index]
@@ -86,8 +94,9 @@ class RooftopPanels(td.Dataset):
 
         return rgb, mask
 
+    #applying augmentations to improve results
     @staticmethod
-    def _apply_augmentation(rgb, mask):
+    def apply_augmentation(rgb, mask):
         # Random horizontal flip
         if random.random() < 0.5:
             rgb = TF.hflip(rgb)

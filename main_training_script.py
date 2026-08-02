@@ -8,6 +8,8 @@ import random
 from tqdm import tqdm
 from provider.dataset_provider import get_loader
 
+
+#set seed for reproducibility
 SEED = 13
 
 def set_seed(seed):
@@ -16,8 +18,11 @@ def set_seed(seed):
     torch.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
 
-BASE_PATH = r"C:\Users\mclou\PycharmProjects\DeepLearningAssignment\data\PV03"
+BASE_PATH = r"" #path to root
 
+###########FUNCTIONS#############
+
+#pytorch training loop; processes images, updates model weights, and returns avg loss
 def train(model, loss_fn, optimizer, epoch, train_ds, device):
     model.train()
 
@@ -42,7 +47,7 @@ def train(model, loss_fn, optimizer, epoch, train_ds, device):
 
     return np.mean(running_loss)
 
-
+#validation loop
 def validation(model, loss_fn, epoch, val_ds, device):
     model.eval()
 
@@ -62,7 +67,6 @@ def validation(model, loss_fn, epoch, val_ds, device):
     return np.mean(running_loss)
 
 # Model architecture (DoubleConv + U-Net)
-
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
@@ -124,32 +128,34 @@ class UNetModel(nn.Module):
 
         return self.final_conv(x)
 
+
+################MODEL RUN#############
 if __name__ == '__main__':
     set_seed(SEED)
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') #use GPU if available
     print(f"Using device: {device}")
 
-    # Note: If your masks are single-channel grayscale, out_channels should be 1
-    model = UNetModel(in_channels=3, out_channels=1).to(device)
+    model = UNetModel(in_channels=3, out_channels=1).to(device) #out=1 since mask is binary
 
+    #learning rate and early stopping config
     lr = 0.0001
     patience = 5
     patience_counter = 0
 
-    loss_fn = nn.BCEWithLogitsLoss()
+    loss_fn = nn.BCEWithLogitsLoss() #loss function type
 
-    optim = opt.Adam(model.parameters(), lr=lr)
+    optim = opt.Adam(model.parameters(), lr=lr) #optimizer type
 
+    #data loading for training and validation
     print(f"Loading data from: {BASE_PATH}")
-    # get_loader will now append "train" and "val" to your updated root BASE_PATH
     train_ds = get_loader(base_path=BASE_PATH, dataset_type="train")
     val_ds = get_loader(base_path=BASE_PATH, dataset_type="val")
 
     all_train_losses = []
     all_val_losses = []
 
-    # Create directory to save model results
+    #creating and confirming output directory
     run_name = "30cm_augmented"  # change this label for new model
     model_path = f"{loss_fn.__class__.__qualname__}_{optim.__class__.__qualname__}_{lr}_{run_name}"
     full_save_dir = os.path.join(BASE_PATH, model_path)
@@ -157,18 +163,15 @@ if __name__ == '__main__':
     if not os.path.exists(full_save_dir):
         os.makedirs(full_save_dir, exist_ok=True)
 
-    # training loop
-    for epoch in range(50):
+    # main training loop
+    for epoch in range(50): #range(x) where x=epoch number
         tr_loss = train(model=model, loss_fn=loss_fn, optimizer=optim, epoch=epoch, train_ds=train_ds, device=device)
         val_loss = validation(model=model, loss_fn=loss_fn, epoch=epoch, val_ds=val_ds, device=device)
-
-        torch.cuda.empty_cache(
-
-        )
 
         all_train_losses.append(tr_loss)
         all_val_losses.append(val_loss)
 
+        #early stopping check
         if epoch > 0:
             if val_loss > all_val_losses[epoch - 1]:
                 patience_counter += 1
@@ -179,19 +182,16 @@ if __name__ == '__main__':
                 print(f"We stopped training after {epoch} epochs with a total patience of: {patience_counter}")
                 break
 
-        # 1. Define the directory path
+        #saving each checkpoint individually
         save_dir = os.path.join(BASE_PATH, model_path)
-
-        # 2. Ensure the directory exists (exist_ok=True prevents errors if it already exists)
         os.makedirs(save_dir, exist_ok=True)
-
-        # 3. Save your checkpoint
         torch.save({
             "net_state_dict": model.state_dict(),
             "train_losses": all_train_losses,  # or whatever your dict keys are
             "val_losses": all_val_losses
         }, os.path.join(save_dir, f"model_epoch{epoch}.pt"))
 
+    #plot loss curves
     plt.plot(all_train_losses, color='b')
     plt.plot(all_val_losses, color='r')
     plt.show()
