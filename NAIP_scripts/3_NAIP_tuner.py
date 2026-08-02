@@ -7,7 +7,7 @@ import os
 import random
 from tqdm import tqdm
 from provider.dataset_provider import get_loader
-from classcode_training import UNetModel, train, validation
+from main_training_script import UNetModel, train, validation
 
 SEED = 13
 

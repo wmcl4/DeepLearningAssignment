@@ -4,7 +4,7 @@ import torch
 import rasterio
 from rasterio.windows import Window
 from PIL import Image
-from classcode_training import UNetModel
+from main_training_script import UNetModel
 
 # ---- CONFIG ----
 NAIP_TIFF_PATH = r"C:\Users\mclou\Downloads\oregon_panels_NAIP\m_4412042_sw_10_030_20220628\m_4412042_sw_10_030_20220628.tif"
