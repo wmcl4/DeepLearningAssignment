@@ -8,13 +8,7 @@ This folder is intentionally left empty of raw imagery in the repository (datase
 https://zenodo.org/record/5171712
 
 - **PV01** — used to **train** the model. Split into train/val/test (70/20/10).
-- **PV03** — used **only for testing**, to evaluate how well the model generalizes to a different data subset it was never trained on. Not split; the entire PV03 set is held out purely for evaluation. PV03 covers six sub-categories:
-  - `PV03_Ground_Cropland`
-  - `PV03_Ground_Grassland`
-  - `PV03_Ground_SalineAlkali`
-  - `PV03_Ground_Shrubwood`
-  - `PV03_Ground_WaterSurface`
-  - `PV03_Rooftop`
+- **PV03** — used **only for testing**, to evaluate how well the model generalizes to a different data subset it was never trained on. Not split; the entire PV03 set is held out purely for evaluation. 
 
 ## Setup
 
@@ -22,7 +16,7 @@ https://zenodo.org/record/5171712
 2. Place PV01's raw files under `data/PV01/`, and PV03's six category folders under `data/PV03/`.
 3. Run the data-splitting script:
    ```bash
-   python data_divider.py
+   python data_split_PV01.py
    ```
    This script:
    - Splits **PV01 only** into train/val/test (70/20/10, seed=13), stratified per category if applicable, so each split gets a proportional mix
@@ -42,6 +36,4 @@ https://zenodo.org/record/5171712
    ```
 5. Update `BASE_PATH` in the training script to point to this `data/` folder.
 
-## Why two separate test sets
 
-Reporting metrics on `test/` (PV01) and `test_PV03/` separately gives two distinct signals: performance on data similar to training (in-distribution) versus performance on a related but unseen subset (a basic generalization check). Merging them into one number would obscure this distinction.
