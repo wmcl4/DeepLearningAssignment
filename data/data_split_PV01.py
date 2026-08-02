@@ -53,7 +53,7 @@ random.shuffle(pairs)
 total = len(pairs) # total number of data pairs
 # Calculate split boundaries
 train_end = int(0.7 * total) # 70% of data is for training 
-val_end = int(0.9 * total) # 90% of data is for draining + validation
+val_end = int(0.9 * total) # 90% of data is for training + validation
 
 train = pairs[:train_end] # takes the first 70% for training
 val = pairs[train_end:val_end] # takes the next 20% for validation
