@@ -94,7 +94,26 @@ Beyond the core PV01 benchmark results above, we tested how well the trained mod
 
 **Results:** Direct transfer of PV03 model to NAIP imagery was weak, consistent with the source dataset's own reported finding that cross-domain transfer without fine-tuning is unreliable. Fine-tuning on the small labeled NAIP set meaningfully improved detection, though there are some limitations. This work is still in progress.
 
+The scripts used to fine-tune the PV03 model on hand-labeled NAIP tiles and run
+it against full NAIP scenes are documented separately (`NAIP_README.md`), since
+they form their own small pipeline. Summary:
 
+**Quick start (run inference only, using the provided checkpoint):**
+Install dependencies, point `4_NAIP_generalizer.py` at the checkpoint and a NAIP
+`.tif` file, and run it. Output is a single stitched image with detected
+panels highlighted in red. Email me (Will) to request a model epoch if you want to skip training the model yourself.
+
+**Full pipeline (to retrain or extend with new labels), run in order:**
+1. `1_NAIP_Mask_Converter.py` — converts hand-painted masks into the
+   black-background/white-panel convention the pipeline expects
+2. `2_NAIP_split_trainingdata.py` — splits labeled tiles into train/val (80/20,
+   fixed seed)
+3. `3_NAIP_tuner.py` — fine-tunes from the PV03 checkpoint (low
+   learning rate, early stopping)
+4. `4_NAIP_generalizer.py` — runs the resulting model against a full scene
+
+Each image requires a matching `_label.bmp` mask of the same dimensions. See
+`NAIP_README.md` for full configuration details, requirements, and notes.
 
 ## Runnable Example
 
