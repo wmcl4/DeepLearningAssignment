@@ -115,46 +115,6 @@ panels highlighted in red. Email me (Will) to request a model epoch if you want 
 Each image requires a matching `_label.bmp` mask of the same dimensions. See
 `NAIP_README.md` for full configuration details, requirements, and notes.
 
-## Runnable Example
-
-```bash
-# Install dependencies
-pip install torch torchvision numpy matplotlib scikit-image pillow tqdm
-
-# Expected folder structure:
-# data/
-# ├── train/
-# │   ├── PV01_....bmp
-# │   ├── PV01_..._label.bmp
-# │   └── ...
-# ├── val/
-# └── test/
-
-# Train
-python training.py
-
-# Evaluate on test set (IoU, Dice, F1, accuracy, precision, recall + visualizations)
-python test_solar_panel_unet.py
-
-# Run inference on a new data, full-size aerial image
-python predict_full_image.py
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
